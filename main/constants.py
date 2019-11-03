@@ -1,6 +1,0 @@
-ORDINARY = 1
-HEAD = 2
-POSITIONS = (
-    (ORDINARY, 'ORDINARY'),
-    (HEAD, 'HEAD')
-)

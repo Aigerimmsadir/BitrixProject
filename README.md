@@ -1,2 +1,0 @@
-# BitrixProject
-Django project
