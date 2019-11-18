@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.parsers import MultiPartParser, FormParser 
+from rest_framework.parsers import MultiPartParser, FormParser
 from .models import CustomUser
 from .serializers import CustomUserSerializer
 from django.shortcuts import render
@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.signals import user_logged_in
 from django.core.exceptions import ObjectDoesNotExist
-
+from rest_framework import mixins
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -26,7 +26,6 @@ import jwt
 @api_view(['POST'])
 @permission_classes([AllowAny, ])
 def authenticate_user(request):
-
     try:
         email = request.data['email']
         password = request.data['password']
@@ -53,7 +52,14 @@ def authenticate_user(request):
         res = {'error': 'please provide a email and a password'}
         return Response(res)
 
+
 class UserViewSet(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser,)
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+
+
+#
+# class RegisterUserViewSet(viewsets.ModelViewSet):
+#   queryset = CustomUser.objects.all()
+#   serializer_class = CustomUserSerializer

@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import CustomUser
 
-from .models import Profile
+from main.models import Profile
 
 class ProfileInline(admin.StackedInline):
     model = Profile
