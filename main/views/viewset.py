@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from main.models import *
 from main.serializers import *
 from users.serializers import *
@@ -21,13 +21,20 @@ class PostViewSet(viewsets.ModelViewSet):
                        filters.OrderingFilter)
 
     search_fields = ('text',)
-
     ordering_fields = ('created_date',)
-
     ordering = ('-created_date',)
 
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
+
+    @action(methods=['GET'], detail=False)
+    def posts_for_me(self, request):
+        print('hh')
+        userposts = request.user.my_userposts.all()
+        print(userposts)
+        posts = Post.objects.filter(id__in=userposts.values('post_id'))
+        serializer = PostSerializer(posts, many=True, context={'request': request})
+        return Response(serializer.data)
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -35,9 +42,11 @@ class ProfileViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
     permission_classes = (IsAuthenticated,)
 
-
-    # def perform_create(self, serializer):
-    #     serializer.save(user=self.request.user)
+    @action(methods=['GET'], detail=True)
+    def department_profiles(self, request, pk):
+        department = Department.objects.get(id=pk)
+        serializer = ProfileSerializer(department.profiles, many=True)
+        return Response(serializer.data)
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
@@ -45,35 +54,14 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentSerializer
     permission_classes = (IsAuthenticated,)
 
-
-class CommentList(APIView):
-    http_method_names = ['get', 'post']
-    permission_classes = (IsAuthenticated,)
-
-    def get_project(self, pk):
-        return Post.objects.get(id=pk)
-
-    def get(self, request, pk):
-        post = self.get_project(pk)
-        comments = post.comments.all()
-        serializer = CommentSerializer(comments, many=True)
+    @action(methods=['GET'], detail=True)
+    def company_departments(self, request, pk):
+        company = Company.objects.get(id=pk)
+        serializer = DepartmentSerializer(company.departments, many=True)
         return Response(serializer.data)
 
-    def post(self, request, pk):
-        serializer = CommentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(post_id=pk, author=request.user)
-            return Response(serializer.data)
-        return Response(serializer.errors)
 
-
-class ProfileCreate(APIView):
-    http_method_names = ['post']
-    permission_classes = (IsAuthenticated,)
-
-    def post(self, request, pk):
-        serializer = ProfileSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data)
-        return Response(serializer.errors)
+class CompanyViewSet(viewsets.ModelViewSet):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
+    permission_classes = (IsAdminUser,)

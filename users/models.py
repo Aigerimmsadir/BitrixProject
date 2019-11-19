@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 from .managers import CustomUserManager
-from .utils.choices import STATUS_CHOICES
+
 # from main.models import Department
 
 
@@ -20,6 +20,10 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    @property
+    def company(self):
+        return self.department.company
 
 
 # class Profile(models.Model):

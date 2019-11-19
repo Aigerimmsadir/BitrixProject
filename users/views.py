@@ -17,11 +17,11 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.views import APIView
 from rest_framework_jwt.utils import jwt_payload_handler
 from django.contrib.auth.hashers import check_password
-
+from rest_framework.request import Request
 from django.conf import settings
 from users.models import CustomUser
 import jwt
-
+from rest_framework.decorators import action
 
 @api_view(['POST'])
 @permission_classes([AllowAny, ])
@@ -58,8 +58,16 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
 
+    @action(methods=['GET'], detail=False)
+    def current(self, request):
+        print(self.request.user)
+        serializer=CustomUserSerializer(self.request.user,context={'request': request})
+        return Response(serializer.data)
 
-#
-# class RegisterUserViewSet(viewsets.ModelViewSet):
-#   queryset = CustomUser.objects.all()
-#   serializer_class = CustomUserSerializer
+# @api_view(['GET',])
+# def current_user(request):
+#     serializer_context = {
+#         'request': Request(request),
+#     }
+#     serializer=CustomUserSerializer(instance=request.user,context=serializer_context)
+#     return Response(serializer.data)
