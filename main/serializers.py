@@ -25,10 +25,10 @@ class ReportSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
     user_ids = serializers.ListField(
-        child=serializers.IntegerField(),required=False
+        child=serializers.IntegerField(), required=False
     )
     documents = serializers.ListField(
-        child=serializers.FileField(),required=False
+        child=serializers.FileField(), required=False
     )
 
     class Meta:

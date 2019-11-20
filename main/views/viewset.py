@@ -10,7 +10,7 @@ from main.serializers import *
 from users.serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-
+from django.db.models import Q
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -32,7 +32,8 @@ class PostViewSet(viewsets.ModelViewSet):
         print('hh')
         userposts = request.user.my_userposts.all()
         print(userposts)
-        posts = Post.objects.filter(id__in=userposts.values('post_id'))
+        posts = Post.objects.filter(id__in=userposts.values('post_id') | Q(author_id=self.request.user.id))
+        posts = Post.objects.filter(author_id=self.request.id)
         serializer = PostSerializer(posts, many=True, context={'request': request})
         return Response(serializer.data)
 

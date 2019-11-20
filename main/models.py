@@ -27,7 +27,7 @@ class Department(models.Model):
 
 class Profile(models.Model):
     phone = models.CharField(max_length=255, null=True)
-    isFemale = models.BooleanField(null=True)
+    is_company_admin = models.BooleanField(default=False)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='profiles', null=True)
     is_head = models.BooleanField(null=True)
@@ -83,7 +83,7 @@ class Comment(models.Model):
     def __str__(self):
         return f'comment of {self.author.email}, post: {self.post}'
 
-
+#any to many чтоб
 class UserPost(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,related_name='my_userposts')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_users')
