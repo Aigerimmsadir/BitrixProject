@@ -1,10 +1,15 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from rest_framework_jwt.views import obtain_jwt_token
-
 from main.views import *
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+)
+
+from users.views import TokenObtainPairView
 
 urlpatterns = [
+    path('api/token/'  , TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('posts/<int:pk>/comments/', CommentList.as_view()),
     # path('departments/<int:pk>/profiles/', ProfilesOfDepartment.as_view())
 
