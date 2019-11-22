@@ -12,6 +12,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from django.db.models import Q
 
+
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -24,16 +25,22 @@ class PostViewSet(viewsets.ModelViewSet):
     ordering_fields = ('created_date',)
     ordering = ('-created_date',)
 
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return PostSerializerShort
+        elif self.action == 'retrieve':
+            return PostSerializerFull
+        return PostSerializer
+
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
-
+#исправить на менеджера
     @action(methods=['GET'], detail=False)
     def posts_for_me(self, request):
         print('hh')
         userposts = request.user.my_userposts.all()
         print(userposts)
         posts = Post.objects.filter(id__in=userposts.values('post_id') | Q(author_id=self.request.user.id))
-        posts = Post.objects.filter(author_id=self.request.id)
         serializer = PostSerializer(posts, many=True, context={'request': request})
         return Response(serializer.data)
 

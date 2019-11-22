@@ -7,11 +7,13 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import viewsets
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly, IsAuthenticated
-from rest_framework.parsers import MultiPartParser, FormParser 
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
+from rest_framework.decorators import action
+
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -20,6 +22,7 @@ def get_tokens_for_user(user):
         'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
+
 
 class TokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -40,7 +43,7 @@ class TokenObtainPairView(TokenObtainPairView):
 
 class UserViewSet(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser,)
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
 
@@ -68,3 +71,9 @@ class UserViewSet(viewsets.ModelViewSet):
                 return Response({'user': serializer.data, **token}, status=status.HTTP_201_CREATED, headers=headers)
             except:
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(methods=['GET'], detail=False)
+    def me(self, request):
+        user = request.user
+        serializer = CustomUserSerializer(user, context={'request': request})
+        return Response(serializer.data)

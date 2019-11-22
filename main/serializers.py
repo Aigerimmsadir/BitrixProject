@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from main.models import *
 from users.serializers import *
-
+from django.db import transaction
 
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,35 +22,50 @@ class ReportSerializer(serializers.ModelSerializer):
         read_only_fields = ('date_from', 'author',)
 
 
+class PostSerializerShort(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = '__all__'
+
+
+class PostSerializerFull(PostSerializerShort):
+    author = CustomUserSerializer()
+
+    class Meta(PostSerializerShort.Meta):
+        fields = PostSerializerShort.Meta.fields
+
+
 class PostSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
     user_ids = serializers.ListField(
         child=serializers.IntegerField(), required=False
     )
-    documents = serializers.ListField(
+    documents_uploaded = serializers.ListField(
         child=serializers.FileField(), required=False
     )
 
     class Meta:
         model = Post
-        fields = ('text', 'author', 'user_ids', 'documents', 'created_date')
+        fields = ('id','text', 'author', 'user_ids', 'documents_uploaded', 'created_date')
         read_only_fields = ('created_date', 'author',)
-        write_only_fields = ('user_ids', 'documents',)
 
     def create(self, validated_data):
-        user_ids = validated_data.pop('user_ids')
-        documents = validated_data.pop('documents')
-        post = Post(**validated_data)
-        post.save()
-        for i in user_ids:
-            user = CustomUser.objects.get(id=i)
-            userpost = UserPost(user=user, post=post)
-            userpost.save()
-        for j in documents:
-            postdocument = PostDocument(post=post, document=j)
-            postdocument.save()
+        with transaction.atomic():
+            user_ids = validated_data.pop('user_ids')
+            print(user_ids)
+            documents = validated_data.pop('documents_uploaded')
+            print(documents)
+            post = Post(**validated_data)
+            post.save()
+            for i in user_ids:
+                user = CustomUser.objects.get(id=i)
+                userpost = UserPost(user=user, post=post)
+                userpost.save()
+            for j in documents:
+                postdocument = PostDocument(post=post, document=j)
+                postdocument.save()
 
-        return post
+            return post
 
 
 class CommentSerializer(serializers.ModelSerializer):

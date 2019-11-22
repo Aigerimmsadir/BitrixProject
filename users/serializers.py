@@ -2,13 +2,14 @@ from rest_framework import serializers
 from main.models import Profile, CustomUser
 
 
-
-
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = '__all__'
-        read_only_fields=('user',)
+        read_only_fields = ('user',)
+
+
+
 
 class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
     profile = ProfileSerializer(required=False)
@@ -20,7 +21,7 @@ class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        profile_data={}
+        profile_data = {}
         if 'profile' in validated_data:
             profile_data = validated_data.pop('profile')
         password = validated_data.pop('password')
@@ -44,5 +45,3 @@ class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
         profile.save()
 
         return instance
-
-
