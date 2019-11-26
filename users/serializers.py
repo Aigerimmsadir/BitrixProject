@@ -1,8 +1,13 @@
 from rest_framework import serializers
-from main.models import Profile, CustomUser
+from main.models import Profile, CustomUser,Company
 
+class CompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = '__all__'
 
 class ProfileSerializer(serializers.ModelSerializer):
+    company=CompanySerializer()
     class Meta:
         model = Profile
         fields = '__all__'

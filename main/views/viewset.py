@@ -27,7 +27,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'list':
-            return PostSerializerShort
+            return PostSerializerFull
         elif self.action == 'retrieve':
             return PostSerializerFull
         return PostSerializer
@@ -40,7 +40,7 @@ class PostViewSet(viewsets.ModelViewSet):
         print('hh')
         userposts = request.user.my_userposts.all()
         print(userposts)
-        posts = Post.objects.filter(id__in=userposts.values('post_id') | Q(author_id=self.request.user.id))
+        posts = Post.objects.filter(Q(id__in=userposts.values('post_id') ) | Q(author_id=self.request.user.id))
         serializer = PostSerializer(posts, many=True, context={'request': request})
         return Response(serializer.data)
 
