@@ -6,8 +6,21 @@ class CompanySerializer(serializers.ModelSerializer):
         model = Company
         fields = '__all__'
 
+class CustomUserSerializerShort(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+    avatar = serializers.SerializerMethodField()
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
+
+    def get_avatar(self, obj):
+        if obj.profile.avatar is not None:
+            return obj.profile.avatar
+        return ''
+
 class ProfileSerializer(serializers.ModelSerializer):
     company=CompanySerializer()
+    head=serializers.IntegerField()
     class Meta:
         model = Profile
         fields = '__all__'

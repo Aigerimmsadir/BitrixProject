@@ -40,7 +40,10 @@ class Profile(models.Model):
 
     @property
     def head(self):
-        return Profile.objects.get(department=self.department, is_head=True).id
+        try:
+            return Profile.objects.get(department=self.department, is_head=True).id
+        except:
+            return None
 
     def __str__(self):
         return f'{self.user.email}, department - {self.department.name}'
@@ -83,9 +86,10 @@ class Comment(models.Model):
     def __str__(self):
         return f'comment of {self.author.email}, post: {self.post}'
 
-#any to many чтоб
+
+# any to many чтоб
 class UserPost(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,related_name='my_userposts')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='my_userposts')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_users')
 
     def __str__(self):
