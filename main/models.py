@@ -41,7 +41,7 @@ class Profile(models.Model):
     @property
     def head(self):
         try:
-            return Profile.objects.get(department=self.department, is_head=True).id
+            return Profile.objects.get(department=self.department, is_head=True).user.id
         except:
             return None
 
