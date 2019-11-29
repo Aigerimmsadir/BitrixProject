@@ -1,10 +1,10 @@
 from django.db import models
 # from django.contrib.auth.models import CustomUser, AbstractCustomUser, AbstractBaseCustomUser, PermissionsMixin, BaseCustomUserManager
-from users.models import CustomUser
 from rest_framework.authtoken.models import Token
 from utils.upload import *
 from utils.validators import post_document_size, post_document_extension
-
+from users.models import CustomUser
+from main.managers import UserPostManager 
 
 class Company(models.Model):
     name = models.CharField(max_length=255)
@@ -61,8 +61,12 @@ class Report(models.Model):
 
 class Post(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='posts')
+    shared_posts = models.ManyToManyField('users.CustomUser', through='UserPost', related_name='shared_posts')
     text = models.CharField(max_length=2550)
     created_date = models.DateTimeField(auto_now=True)
+
+    user_posts = UserPostManager()
+    objects = models.Manager()
 
     def __str__(self):
         return f'{self.author.email}, created at:{self.created_date}'

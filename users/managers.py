@@ -1,4 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 class CustomUserManager(BaseUserManager):
@@ -31,3 +32,14 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
+
+
+# class UserPostManager(models.Manager):
+#     def created_by_user(self, user):
+#         return super(UserPostManager, self).get_queryset().filter(author=user)
+
+#     def most_recent(self, user):
+#         return super(UserPostManager, self).get_queryset().filter(author=user)
+
+#     def shared_with_current_user(self, user):
+#         return User.shared_posts.all()
