@@ -28,16 +28,21 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 
-class CustomUserSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.Serializer):
     profile = ProfileSerializer(required=False)
+    password = serializers.CharField()
+    email = serializers.EmailField()
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
     id = serializers.ReadOnlyField()
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'url', 'email', 'first_name', 'last_name', 'password', 'profile')
+        fields = ('id', 'email', 'first_name', 'last_name', 'password', 'profile')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
+        print(validated_data)
         profile_data = {}
         if 'profile' in validated_data:
             profile_data = validated_data.pop('profile')

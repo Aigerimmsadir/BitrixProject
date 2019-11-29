@@ -11,12 +11,13 @@ from users.serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from django.db.models import Q
+from main.permissions import *
 
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsAuthorOrReadOnly)
     filter_backends = (DjangoFilterBackend,
                        filters.SearchFilter,
                        filters.OrderingFilter)
@@ -49,7 +50,7 @@ class PostViewSet(viewsets.ModelViewSet):
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     @action(methods=['GET'], detail=True)
     def department_profiles(self, request, pk):
@@ -61,7 +62,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsCompanyAdmin | IsSuperUser,)
 
     @action(methods=['GET'], detail=True)
     def company_departments(self, request, pk):
@@ -73,4 +74,4 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
-    permission_classes = (IsAdminUser,)
+    permission_classes = (IsSuperUser,)

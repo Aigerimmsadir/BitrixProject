@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 
 class CommentList(APIView):
     http_method_names = ['get', 'post']
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsAuthorOrReadOnly)
 
     def get(self, request, pk):
         post_comment = get_object_or_404(PostComment, pk=pk)
@@ -27,7 +27,7 @@ class CommentList(APIView):
 
 class PostCommentList(APIView):
     http_method_names = ['get', 'post']
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsAuthorOrReadOnly)
 
     def get_post(self, pk):
         return Post.objects.get(id=pk)

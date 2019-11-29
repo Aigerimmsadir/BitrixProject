@@ -28,7 +28,7 @@ class Department(models.Model):
 class Profile(models.Model):
     phone = models.CharField(max_length=255, null=True)
     is_company_admin = models.BooleanField(default=False)
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile')
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='profiles')
     is_head = models.BooleanField(null=True)
     avatar = models.ImageField(upload_to=avatar_path, null=True)
