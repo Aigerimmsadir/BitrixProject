@@ -52,6 +52,8 @@ class PostSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             user_ids = validated_data.pop('user_ids')
+            if len(user_ids)==0:
+                user_ids=list( CustomUser.objects.all().values_list('id', flat=True))
             print(user_ids)
             documents = validated_data.pop('documents_uploaded')
             print(documents)
