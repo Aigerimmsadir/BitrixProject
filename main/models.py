@@ -88,9 +88,6 @@ class AbstractComment(models.Model):
     def __str__(self):
         return f'comment of {self.author.email}'
 
-
-
-
 class PostComment(AbstractComment):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_comments')
 

@@ -13,7 +13,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
 from rest_framework.decorators import action
+import logging
 
+logger = logging.getLogger(__name__)
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -65,9 +67,12 @@ class UserViewSet(viewsets.ModelViewSet):
         email = request.data['email']
         password = request.data['password']
         user = CustomUser.objects.get(email=email)
+        logger.info(f"new {user} has joined the party")
         if check_password(password, user.password):
             try:
                 token = get_tokens_for_user(user)
+                logger.info(f"new token has been generated")
+                logger.critical(f"lol")
                 return Response({'user': serializer.data, **token}, status=status.HTTP_201_CREATED, headers=headers)
             except:
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)

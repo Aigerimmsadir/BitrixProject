@@ -170,3 +170,49 @@ SIMPLE_JWT = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s -- %(asctime)s -- %(message)s',
+        },
+        'simple': {
+            'format': '%(levelname)s -- %(message)s',
+        }
+    },
+    'handlers': {
+        'main_file_handler': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'log/main') + '/main.log',
+            'maxBytes': 1024*1024*5,
+            'backupCount': 3,
+            'formatter': 'verbose'
+        },
+        'users_file_handler': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'log/users') + '/users.log',
+            'maxBytes': 1024*1024*5,
+            'backupCount': 3,
+            'formatter': 'verbose'
+        },
+        'console_handler': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        }
+    },
+    'loggers': {
+        'main': {
+            'handlers': ['main_file_handler', 'console_handler'],
+            'level': 'INFO',
+        },
+    },
+    'loggers': {
+        'users': {
+            'handlers': ['users_file_handler', 'console_handler'],
+            'level': 'INFO',
+        },
+    },
+}
