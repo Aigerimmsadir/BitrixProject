@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from main.models import Profile, CustomUser,Company
+from main.models import Profile, Company
+from users.models import CustomUser
 
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,8 +20,6 @@ class CustomUserSerializerShort(serializers.ModelSerializer):
         return ''
 
 class ProfileSerializer(serializers.ModelSerializer):
-    company=CompanySerializer()
-    head=serializers.IntegerField()
     class Meta:
         model = Profile
         fields = '__all__'
@@ -29,7 +28,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 
-class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(required=False)
     id = serializers.ReadOnlyField()
 
@@ -59,7 +58,6 @@ class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
         profile.avatar = profile_data.get('avatar', profile.avatar)
         profile.department = profile_data.get('department', profile.department)
         profile.date_of_birth = profile_data.get('date_of_birth', profile.date_of_birth)
-        profile.position = profile_data.get('position', profile.position)
         profile.save()
 
         return instance

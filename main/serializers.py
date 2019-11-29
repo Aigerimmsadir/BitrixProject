@@ -68,10 +68,36 @@ class PostSerializer(serializers.ModelSerializer):
             return post
 
 
+# class CommentSerializer(serializers.ModelSerializer):
+#     author = CustomUserSerializer(read_only=True)
+
+#     class Meta:
+#         model = Comment
+#         fields = '__all__'
+#         read_only_fields = ('created_date', 'author', 'comment',)
+
+class PostCommentSerializer(serializers.ModelSerializer):
+    author = CustomUserSerializer(read_only=True)
+
+    class Meta:
+        model = PostComment
+        fields = '__all__'
+        read_only_fields = ('created_date', 'author', 'post',)
+
 class CommentSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
+    post_comment = PostCommentSerializer(read_only=True)
 
     class Meta:
         model = Comment
         fields = '__all__'
-        read_only_fields = ('created_date', 'author', 'post',)
+        read_only_fields = ('created_date', 'author', 'comment', 'post_comment')
+
+    def create(self, validated_data):
+           # commented_id = self.context['post_comment_id']
+           user = self.context['request'].user
+           commenter = Comment.objects.create(author=user, **validated_data)
+           # comment_to_comment = CommentToComment.objects.create(commented_id=commented_id, commenter_id=commenter.id)
+           return commenter
+
+

@@ -34,7 +34,8 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
-#исправить на менеджера
+
+    #исправить на менеджера
     @action(methods=['GET'], detail=False)
     def posts_for_me(self, request):
         print('hh')

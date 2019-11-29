@@ -8,10 +8,8 @@ def post_document_path(instance, filename):
     post_id = instance.post.id
     return f'companies/{company_id}/posts/{post_id}/{filename}'
 
-
 def avatar_path(instance, filename):
-    profile_id = instance.id
-    return f'profiles/{profile_id}/{filename}'
+    return f'profiles/{datetime.now()}/{filename}'
 
 
 def file_delete_path(document):

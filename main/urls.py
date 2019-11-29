@@ -10,15 +10,16 @@ from users.views import TokenObtainPairView
 urlpatterns = [
     path('api/token/'  , TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('posts/<int:pk>/comments/', CommentList.as_view()),
+    path('posts/<int:pk>/comments/', PostCommentList.as_view()),
+    path('post_comments/<int:pk>/comments/', CommentList.as_view()),
     # path('departments/<int:pk>/profiles/', ProfilesOfDepartment.as_view())
 
 ]
 
 router = DefaultRouter()
-router.register('posts', PostViewSet, base_name='main')
-router.register('profiles', ProfileViewSet, base_name='main')
-router.register('companies', CompanyViewSet, base_name='main')
-router.register('departments', DepartmentViewSet, base_name='main')
+router.register('posts', PostViewSet)
+router.register('profiles', ProfileViewSet)
+router.register('companies', CompanyViewSet)
+router.register('departments', DepartmentViewSet)
 
 urlpatterns += router.urls

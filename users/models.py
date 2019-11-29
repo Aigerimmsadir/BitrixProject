@@ -23,7 +23,7 @@ class CustomUser(AbstractUser):
 
     @property
     def company(self):
-        return self.department.company
+        return self.profile.department.company
 
 
 # class Profile(models.Model):
