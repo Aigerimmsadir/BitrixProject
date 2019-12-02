@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
 from users.views import TokenObtainPairView
 
 urlpatterns = [
-    path('api/token/'  , TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('posts/<int:pk>/comments/', PostCommentList.as_view()),
     path('post_comments/<int:pk>/comments/', CommentList.as_view()),
@@ -18,8 +18,9 @@ urlpatterns = [
 
 router = DefaultRouter()
 router.register('posts', PostViewSet)
+router.register('reports', ReportViewSet, base_name='Report')
 router.register('profiles', ProfileViewSet)
 router.register('companies', CompanyViewSet)
 router.register('departments', DepartmentViewSet)
-
+router.register('post_documents',PostDocumentViewSet)
 urlpatterns += router.urls

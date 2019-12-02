@@ -1,6 +1,7 @@
 from rest_framework.permissions import IsAdminUser
 from rest_framework import permissions
 
+
 class IsSuperUser(IsAdminUser):
     def has_permission(self, request, view):
         return bool(request.user and request.user.is_superuser)
@@ -11,6 +12,7 @@ class IsCompanyAdmin(permissions.BasePermission):
 
     def has_permission(self, request, view):
         return request.user.is_superuser
+
 
 class IsAdminOrSuperUser(permissions.BasePermission):
     message = 'None of permissions requirements fulfilled.'
@@ -24,6 +26,7 @@ class IsAuthenticatedOrSuperUser(permissions.BasePermission):
 
     def has_permission(self, request, view):
         return bool(request.user or request.user.is_superuser)
+
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
 

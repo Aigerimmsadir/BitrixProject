@@ -2,22 +2,18 @@ from rest_framework import serializers
 from main.models import Profile, Company
 from users.models import CustomUser
 
+
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
         fields = '__all__'
 
+
 class CustomUserSerializerShort(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField()
-    avatar = serializers.SerializerMethodField()
     class Meta:
         model = CustomUser
         fields = '__all__'
 
-    def get_avatar(self, obj):
-        if obj.profile.avatar is not None:
-            return obj.profile.avatar
-        return ''
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,6 +22,11 @@ class ProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ('user',)
 
 
+class ProfileSerializerFull(ProfileSerializer):
+    user = CustomUserSerializerShort()
+
+    class Meta(ProfileSerializer.Meta):
+        fields = '__all__'
 
 
 class CustomUserSerializer(serializers.Serializer):

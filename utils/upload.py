@@ -9,7 +9,7 @@ def post_document_path(instance, filename):
     return f'companies/{company_id}/posts/{post_id}/{filename}'
 
 def avatar_path(instance, filename):
-    return f'profiles/{datetime.now()}/{filename}'
+    return f'profiles/{filename}'
 
 
 def file_delete_path(document):

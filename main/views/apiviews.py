@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404
 from main.permissions import *
 
 
-
 class CommentList(APIView):
     http_method_names = ['get', 'post']
     permission_classes = (IsAuthenticated, IsAuthorOrReadOnly)
@@ -14,15 +13,17 @@ class CommentList(APIView):
     def get(self, request, pk):
         post_comment = get_object_or_404(PostComment, pk=pk)
         comments = post_comment.comments.all()
-        serializer = CommentSerializer(comments, many=True,context={'request': request})
+        serializer = CommentSerializer(comments, many=True, context={'request': request})
         return Response(serializer.data)
 
     def post(self, request, pk):
-        serializer = CommentSerializer(data=request.data, context={'request': request, 'post_comment_id': self.kwargs['pk']})
+        serializer = CommentSerializer(data=request.data,
+                                       context={'request': request, 'post_comment_id': self.kwargs['pk']})
         if serializer.is_valid():
             serializer.save(post_comment_id=pk)
             return Response(serializer.data)
         return Response(serializer.errors)
+
 
 
 
@@ -36,7 +37,7 @@ class PostCommentList(APIView):
     def get(self, request, pk):
         post = self.get_post(pk)
         comments = post.post_comments.all()
-        serializer = PostCommentSerializer(comments, many=True,context={'request': request})
+        serializer = PostCommentSerializer(comments, many=True, context={'request': request})
         return Response(serializer.data)
 
     def post(self, request, pk):

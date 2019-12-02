@@ -3,6 +3,7 @@ from main.models import *
 from users.serializers import *
 from django.db import transaction
 
+
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
@@ -22,7 +23,15 @@ class ReportSerializer(serializers.ModelSerializer):
         read_only_fields = ('date_from', 'author',)
 
 
+class PostDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostDocument
+        fields = ('document',)
+
+
 class PostSerializerShort(serializers.ModelSerializer):
+    documents = PostDocumentSerializer(many=True)
+
     class Meta:
         model = Post
         fields = '__all__'
@@ -46,35 +55,38 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('id','text', 'author', 'user_ids', 'documents_uploaded', 'created_date')
+        fields = ('id', 'text', 'author', 'user_ids', 'documents_uploaded', 'created_date')
         read_only_fields = ('created_date', 'author',)
 
     def create(self, validated_data):
-        with transaction.atomic():
+        if 'user_ids' in validated_data:
             user_ids = validated_data.pop('user_ids')
-            print(user_ids)
+        else:
+            user_ids = list(CustomUser.objects.all().values_list('id', flat=True))
+        if 'documents_uploaded' in validated_data:
             documents = validated_data.pop('documents_uploaded')
-            print(documents)
-            post = Post(**validated_data)
-            post.save()
-            for i in user_ids:
-                user = CustomUser.objects.get(id=i)
-                userpost = UserPost(user=user, post=post)
-                userpost.save()
-            for j in documents:
-                postdocument = PostDocument(post=post, document=j)
-                postdocument.save()
+        else:
+            documents = []
 
-            return post
+        post = Post(**validated_data)
+        post.save()
+        for i in user_ids:
+            user = CustomUser.objects.get(id=i)
+            userpost = UserPost(user=user, post=post)
+            userpost.save()
+        for j in documents:
+            postdocument = PostDocument(post=post, document=j)
+            postdocument.save()
+
+        return post
 
 
-# class CommentSerializer(serializers.ModelSerializer):
-#     author = CustomUserSerializer(read_only=True)
+class PostDocumentSerializerFull(PostDocumentSerializer):
+    post = PostSerializerFull()
 
-#     class Meta:
-#         model = Comment
-#         fields = '__all__'
-#         read_only_fields = ('created_date', 'author', 'comment',)
+    class Meta(PostDocumentSerializer.Meta):
+        fields = PostDocumentSerializer.Meta.fields + ('post',)
+
 
 class PostCommentSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
@@ -84,28 +96,26 @@ class PostCommentSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('created_date', 'author', 'post',)
 
+
 class CommentSerializer(serializers.Serializer):
     author = CustomUserSerializer(read_only=True)
     post_comment = PostCommentSerializer(read_only=True)
 
     class Meta:
-        model = Comment
+        model = CommentToComment
         fields = '__all__'
         read_only_fields = ('created_date', 'author', 'comment', 'post_comment')
 
     def create(self, validated_data):
-           # commented_id = self.context['post_comment_id']
-           user = self.context['request'].user
-           commenter = Comment.objects.create(author=user, **validated_data)
-           # comment_to_comment = CommentToComment.objects.create(commented_id=commented_id, commenter_id=commenter.id)
-           return commenter
-
+        # commented_id = self.context['post_comment_id']
+        user = self.context['request'].user
+        commenter = CommentToComment.objects.create(author=user, **validated_data)
+        # comment_to_comment = CommentToComment.objects.create(commented_id=commented_id, commenter_id=commenter.id)
+        return commenter
 
     def update(self, instance, validated_data):
-           # commented_id = self.context['post_comment_id']
-           instance.text = validated_data.get('text', instance.text)
-           instance.save()
-           # comment_to_comment = CommentToComment.objects.create(commented_id=commented_id, commenter_id=commenter.id)
-           return instance
-
-
+        # commented_id = self.context['post_comment_id']
+        instance.text = validated_data.get('text', instance.text)
+        instance.save()
+        # comment_to_comment = CommentToComment.objects.create(commented_id=commented_id, commenter_id=commenter.id)
+        return instance

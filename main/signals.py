@@ -19,9 +19,12 @@ def company_created(sender, instance, created, **kwargs):
 @receiver(pre_delete, sender=Post)
 def post_deleted(sender, instance, **kwargs):
     docs = PostDocument.objects.filter(post=instance)
-    bool(docs)
-    print(docs)
-    for postdocument in docs:
+    if docs:
+        bool(docs)
+        print(docs)
+        # for postdocument in docs:
+        #     file_delete_path(document=postdocument.document)
+        postdocument=docs.first()
         file_delete_path(document=postdocument.document)
 
 
