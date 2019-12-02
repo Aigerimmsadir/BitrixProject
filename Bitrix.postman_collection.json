@@ -1,0 +1,486 @@
+{
+	"info": {
+		"_postman_id": "9b09924f-9ed2-4e8d-9441-782be4cbc528",
+		"name": "Bitrix",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "superadmin login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "473a78b1-0023-4959-84d1-8f0de60d5b3b",
+						"exec": [
+							"console.log('Hello');",
+							"let jsonData = pm.response.json();",
+							"pm.globals.unset(\"_token\");",
+							"pm.globals.set(\"_token\", jsonData.access);",
+							"pm.globals.unset(\"_refresh\");",
+							"pm.globals.set(\"_refresh\", jsonData.refresh);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "evakuator@gmail.com",
+							"description": "  ",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "evakuator@gmail.com",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/token/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create company",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "473a78b1-0023-4959-84d1-8f0de60d5b3b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "nintendo",
+							"description": "  ",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/companies/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"companies",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create department",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "473a78b1-0023-4959-84d1-8f0de60d5b3b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "game development",
+							"description": "  ",
+							"type": "text"
+						},
+						{
+							"key": "company",
+							"value": "1",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/departments/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"departments",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registration",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "shigerumiyamoto@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "shigerumiyamoto@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "profile.date_of_birth",
+							"value": "1997-02-20",
+							"type": "text"
+						},
+						{
+							"key": "profile.avatar",
+							"type": "file",
+							"src": "/home/evakuator/Pictures/Monogatari/screenshot_20191011_002920.jpg"
+						},
+						{
+							"key": "profile.department",
+							"value": "2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/users/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "473a78b1-0023-4959-84d1-8f0de60d5b3b",
+						"exec": [
+							"console.log('Hello');",
+							"let jsonData = pm.response.json();",
+							"pm.globals.unset(\"_token\");",
+							"pm.globals.set(\"_token\", jsonData.access);",
+							"pm.globals.unset(\"_refresh\");",
+							"pm.globals.set(\"_refresh\", jsonData.refresh);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "shigerumiyamoto@gmail.com",
+							"description": "  ",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "shigerumiyamoto@gmail.com",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/token/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "473a78b1-0023-4959-84d1-8f0de60d5b3b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "author",
+							"value": "3",
+							"description": "  ",
+							"type": "text"
+						},
+						{
+							"key": "text",
+							"value": "really interesting post",
+							"type": "text"
+						},
+						{
+							"key": "created_date",
+							"value": "2019/11/28",
+							"type": "text"
+						},
+						{
+							"key": "user_ids[0]",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "documents_uploaded",
+							"type": "file",
+							"src": [
+								"/home/evakuator/Pictures/Monogatari/screenshot_20191005_225621.jpg",
+								"/home/evakuator/Pictures/Monogatari/screenshot_20191006_001740.jpg",
+								"/home/evakuator/Pictures/Monogatari/screenshot_20191006_003105.jpg"
+							]
+						},
+						{
+							"key": "user_ids[1]",
+							"value": "2",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/posts/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"posts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "comment a post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "473a78b1-0023-4959-84d1-8f0de60d5b3b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "text",
+							"value": "boring :\\",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/posts/1/comments/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"posts",
+						"1",
+						"comments",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "comment a comment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "473a78b1-0023-4959-84d1-8f0de60d5b3b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "text",
+							"value": "i'm sorry, it's actually interesting",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/post_comments/1/comments/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"post_comments",
+						"1",
+						"comments",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
