@@ -60,15 +60,19 @@ class ProfileManager(models.Manager):
 
 
 class PostDocumentManager(models.Manager):
-    pass
-#     def my_documents(self, user):
-#         return super(PostDocumentManager, self).get_queryset().select_related('post').select_related('author').annotate(
-#             author=F('author')
-#         ).filter(author=user)
-#
-#     def documents_for_me(self, user, posts):
-#         return super(PostDocumentManager, self).get_queryset().filter(post_id__in=posts.values('id'))
-#
-#     def recent_my_documents(self, user):
-#         return super(PostDocumentManager, self).get_queryset().select_related('post').annotate(
-#             date=F('post__created_date')).order_by('date').filter(post_id=user.id)
+
+    def my_documents(self, user):
+        posts = user.posts.all()
+        return super(PostDocumentManager, self).get_queryset().filter(post__in=posts)
+
+    def my_documents_recent(self, user):
+        posts = user.posts.all()
+        return super(PostDocumentManager, self).get_queryset().select_related('post').annotate(
+            date=F('post__created_date')).order_by('date').filter(post__in=posts)
+
+    def documents_of_posts(self, posts):
+        return super(PostDocumentManager, self).get_queryset().filter(post_id__in=posts.values('id'))
+
+    def recent_documents(self):
+        return super(PostDocumentManager, self).get_queryset().select_related('post').annotate(
+            date=F('post__created_date')).order_by('date')

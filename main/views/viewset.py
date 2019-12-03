@@ -28,7 +28,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'list':
-            return PostSerializerFull
+            return PostSerializerShort
         elif self.action == 'retrieve':
             return PostSerializerFull
         return PostSerializer
@@ -120,20 +120,30 @@ class ReportViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+
 class PostDocumentViewSet(viewsets.ModelViewSet):
     serializer_class = PostDocumentSerializer
     permission_classes = (IsAuthenticated,)
     queryset = PostDocument.objects.all()
 
-    # @action(methods=['GET'], detail=False)
-    # def my_documents(self, request):
-    #     docs = PostDocument.documents.my_documents(self.request.user)
-    #     serializer = PostDocumentSerializerFull(docs, many=True)
-    #     return Response(serializer.data)
-    #
-    # @action(methods=['GET'], detail=False)
-    # def documents_for_me(self, request):
-    #     myposts=Post.user_posts.shared_with_current_user_or_created_by(self.request.user)
-    #     docs = PostDocument.documents.documents_for_me(self.request.user,myposts)
-    #     serializer = PostDocumentSerializerFull(docs, many=True)
-    #     return Response(serializer.data)
+    @action(methods=['GET'], detail=False)
+    def my_documents(self, request):
+        docs = PostDocument.documents.my_documents(self.request.user)
+        serializer = PostDocumentSerializer(docs, many=True)
+        return Response(serializer.data)
+    @action(methods=['GET'], detail=False)
+    def my_documents_recent(self, request):
+        docs = PostDocument.documents.my_documents_recent(self.request.user)
+        serializer = PostDocumentSerializer(docs, many=True)
+        return Response(serializer.data)
+    @action(methods=['GET'], detail=False)
+    def documents_of_my_posts(self, request):
+        myposts=Post.user_posts.shared_with_current_user_or_created_by(self.request.user)
+        docs = PostDocument.documents.documents_of_posts(myposts)
+        serializer = PostDocumentSerializer(docs, many=True)
+        return Response(serializer.data)
+    @action(methods=['GET'], detail=False)
+    def recent_documents(self, request):
+        docs = PostDocument.documents.recent_documents()
+        serializer = PostDocumentSerializer(docs, many=True)
+        return Response(serializer.data)

@@ -12,7 +12,8 @@ class CompanySerializer(serializers.ModelSerializer):
 class CustomUserSerializerShort(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        fields = ('id','email', 'first_name', 'last_name',)
+        write_only_fields=('password',)
 
 
 class ProfileSerializer(serializers.ModelSerializer):

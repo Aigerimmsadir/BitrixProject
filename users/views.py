@@ -1,5 +1,5 @@
 from rest_framework.parsers import MultiPartParser, FormParser
-from .serializers import CustomUserSerializer
+from .serializers import *
 from rest_framework.response import Response
 from users.models import CustomUser
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -16,6 +16,7 @@ from rest_framework.decorators import action
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -47,17 +48,18 @@ class UserViewSet(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser,)
     permission_classes = (IsAuthenticated,)
     queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
 
     def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
         if self.action == 'create':
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return CustomUserSerializerShort
+        return CustomUserSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

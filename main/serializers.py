@@ -88,6 +88,9 @@ class PostDocumentSerializerFull(PostDocumentSerializer):
         fields = PostDocumentSerializer.Meta.fields + ('post',)
 
 
+
+
+
 class PostCommentSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
 
